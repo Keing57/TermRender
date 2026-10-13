@@ -10,6 +10,11 @@ class Screen:
         clear_screen()
         frame = '\n'.join([''.join(row) for row in self.framebuffer])
         print(frame, end='')
+        
+    def set_pixel(self, x, y, char):
+        x, y = int(x), int(y)
+        if 0 <= x < self.width and 0 <= y < self.height:
+            self.framebuffer[y][x] = char
 
 def clear_screen():
     if os.name == 'nt':
