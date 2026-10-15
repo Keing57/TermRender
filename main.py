@@ -1,5 +1,14 @@
 import os
 
+class Vector3:
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def __sub__(self, other):
+        return Vector3(self.x - other.x, self.y - other.y, self.z - other.z)
+
 class Screen:
     def __init__(self, width=80, height=40):
         self.width = width
