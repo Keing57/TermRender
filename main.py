@@ -9,6 +9,14 @@ class Vector3:
     def __sub__(self, other):
         return Vector3(self.x - other.x, self.y - other.y, self.z - other.z)
 
+class MathUtils:
+    @staticmethod
+    def multiply_matrix_vector(matrix, vec):
+        x = matrix[0][0] * vec.x + matrix[0][1] * vec.y + matrix[0][2] * vec.z
+        y = matrix[1][0] * vec.x + matrix[1][1] * vec.y + matrix[1][2] * vec.z
+        z = matrix[2][0] * vec.x + matrix[2][1] * vec.y + matrix[2][2] * vec.z
+        return Vector3(x, y, z)
+
 class Screen:
     def __init__(self, width=80, height=40):
         self.width = width
