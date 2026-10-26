@@ -38,6 +38,16 @@ class MathUtils:
             [-s, 0, c]
         ]
 
+    @staticmethod
+    def get_rotation_z(angle):
+        c = math.cos(angle)
+        s = math.sin(angle)
+        return [
+            [c, -s, 0],
+            [s, c, 0],
+            [0, 0, 1]
+        ]
+
 class Screen:
     def __init__(self, width=80, height=40):
         self.width = width
