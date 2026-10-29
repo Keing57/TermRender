@@ -48,6 +48,16 @@ class MathUtils:
             [0, 0, 1]
         ]
 
+    @staticmethod
+    def project_3d_to_2d(vector, fov, viewer_distance, screen_width, screen_height):
+        z_dist = vector.z + viewer_distance
+        if z_dist == 0:
+            z_dist = 0.0001
+            
+        x = int((vector.x * fov) / z_dist + screen_width / 2)
+        y = int((vector.y * fov) / z_dist + screen_height / 2)
+        return (x, y)
+
 class Screen:
     def __init__(self, width=80, height=40):
         self.width = width
