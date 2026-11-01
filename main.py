@@ -10,6 +10,11 @@ class Vector3:
     def __sub__(self, other):
         return Vector3(self.x - other.x, self.y - other.y, self.z - other.z)
 
+class Mesh:
+    def __init__(self, vertices=None, edges=None):
+        self.vertices = vertices if vertices is not None else []
+        self.edges = edges if edges is not None else []
+
 class MathUtils:
     @staticmethod
     def multiply_matrix_vector(matrix, vec):
