@@ -15,6 +15,25 @@ class Mesh:
         self.vertices = vertices if vertices is not None else []
         self.edges = edges if edges is not None else []
 
+class Cube(Mesh):
+    def __init__(self):
+        super().__init__()
+        self.vertices = [
+            Vector3(-1, -1, -1),
+            Vector3( 1, -1, -1),
+            Vector3( 1,  1, -1),
+            Vector3(-1,  1, -1),
+            Vector3(-1, -1,  1),
+            Vector3( 1, -1,  1),
+            Vector3( 1,  1,  1),
+            Vector3(-1,  1,  1)
+        ]
+        self.edges = [
+            (0, 1), (1, 2), (2, 3), (3, 0),
+            (4, 5), (5, 6), (6, 7), (7, 4),
+            (0, 4), (1, 5), (2, 6), (3, 7)
+        ]
+
 class MathUtils:
     @staticmethod
     def multiply_matrix_vector(matrix, vec):
