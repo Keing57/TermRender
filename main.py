@@ -118,6 +118,35 @@ class Screen:
                 err += dx
                 y0 += sy
 
+class Renderer:
+    def __init__(self, screen):
+        self.screen = screen
+        self.fov = 40
+        self.viewer_distance = 4
+
+    def render_mesh(self, mesh, angle_x, angle_y, angle_z):
+        rotated_vertices = []
+        rot_x = MathUtils.get_rotation_x(angle_x)
+        rot_y = MathUtils.get_rotation_y(angle_y)
+        rot_z = MathUtils.get_rotation_z(angle_z)
+        
+        for v in mesh.vertices:
+            rotated = MathUtils.multiply_matrix_vector(rot_x, v)
+            rotated = MathUtils.multiply_matrix_vector(rot_y, rotated)
+            rotated = MathUtils.multiply_matrix_vector(rot_z, rotated)
+            
+            projected = MathUtils.project_3d_to_2d(
+                rotated, self.fov, self.viewer_distance, 
+                self.screen.width, self.screen.height
+            )
+            rotated_vertices.append(projected)
+            
+        for edge in mesh.edges:
+            v1_idx, v2_idx = edge
+            x0, y0 = rotated_vertices[v1_idx]
+            x1, y1 = rotated_vertices[v2_idx]
+            self.screen.draw_line(x0, y0, x1, y1, '#')
+
 def clear_screen():
     if os.name == 'nt':
         os.system('cls')
