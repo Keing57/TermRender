@@ -1,5 +1,6 @@
 import os
 import math
+import time
 
 class Vector3:
     def __init__(self, x, y, z):
@@ -88,6 +89,9 @@ class Screen:
         self.height = height
         self.framebuffer = [[' ' for _ in range(width)] for _ in range(height)]
 
+    def clear_buffer(self):
+        self.framebuffer = [[' ' for _ in range(self.width)] for _ in range(self.height)]
+
     def draw(self):
         clear_screen()
         frame = '\n'.join([''.join(row) for row in self.framebuffer])
@@ -154,4 +158,24 @@ def clear_screen():
         os.system('clear')
 
 if __name__ == "__main__":
-    pass
+    screen = Screen(width=80, height=40)
+    cube = Cube()
+    renderer = Renderer(screen)
+    
+    angle_x = 0.0
+    angle_y = 0.0
+    angle_z = 0.0
+    
+    while True:
+        try:
+            screen.clear_buffer()
+            renderer.render_mesh(cube, angle_x, angle_y, angle_z)
+            screen.draw()
+            
+            angle_x += 0.05
+            angle_y += 0.03
+            angle_z += 0.02
+            
+            time.sleep(0.05)
+        except KeyboardInterrupt:
+            break
