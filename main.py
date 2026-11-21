@@ -166,8 +166,13 @@ if __name__ == "__main__":
     angle_y = 0.0
     angle_z = 0.0
     
+    target_fps = 30
+    frame_duration = 1.0 / target_fps
+    
     while True:
         try:
+            start_time = time.time()
+            
             screen.clear_buffer()
             renderer.render_mesh(cube, angle_x, angle_y, angle_z)
             screen.draw()
@@ -176,6 +181,10 @@ if __name__ == "__main__":
             angle_y += 0.03
             angle_z += 0.02
             
-            time.sleep(0.05)
+            elapsed = time.time() - start_time
+            sleep_time = frame_duration - elapsed
+            if sleep_time > 0:
+                time.sleep(sleep_time)
+                
         except KeyboardInterrupt:
             break
