@@ -169,8 +169,8 @@ if __name__ == "__main__":
     target_fps = 30
     frame_duration = 1.0 / target_fps
     
-    while True:
-        try:
+    try:
+        while True:
             start_time = time.time()
             
             screen.clear_buffer()
@@ -186,5 +186,5 @@ if __name__ == "__main__":
             if sleep_time > 0:
                 time.sleep(sleep_time)
                 
-        except KeyboardInterrupt:
-            break
+    except KeyboardInterrupt:
+        clear_screen()
