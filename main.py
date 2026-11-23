@@ -35,6 +35,21 @@ class Cube(Mesh):
             (0, 4), (1, 5), (2, 6), (3, 7)
         ]
 
+class Pyramid(Mesh):
+    def __init__(self):
+        super().__init__()
+        self.vertices = [
+            Vector3( 0, -1,  0),
+            Vector3(-1,  1, -1),
+            Vector3( 1,  1, -1),
+            Vector3( 1,  1,  1),
+            Vector3(-1,  1,  1)
+        ]
+        self.edges = [
+            (1, 2), (2, 3), (3, 4), (4, 1),
+            (0, 1), (0, 2), (0, 3), (0, 4)
+        ]
+
 class MathUtils:
     @staticmethod
     def multiply_matrix_vector(matrix, vec):
@@ -159,7 +174,7 @@ def clear_screen():
 
 if __name__ == "__main__":
     screen = Screen(width=80, height=40)
-    cube = Cube()
+    mesh = Pyramid()
     renderer = Renderer(screen)
     
     angle_x = 0.0
@@ -174,7 +189,7 @@ if __name__ == "__main__":
             start_time = time.time()
             
             screen.clear_buffer()
-            renderer.render_mesh(cube, angle_x, angle_y, angle_z)
+            renderer.render_mesh(mesh, angle_x, angle_y, angle_z)
             screen.draw()
             
             angle_x += 0.05
