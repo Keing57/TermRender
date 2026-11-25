@@ -15,6 +15,17 @@ class Mesh:
     def __init__(self, vertices=None, edges=None):
         self.vertices = vertices if vertices is not None else []
         self.edges = edges if edges is not None else []
+        self.angle_x = 0.0
+        self.angle_y = 0.0
+        self.angle_z = 0.0
+        self.rotation_speed_x = 0.05
+        self.rotation_speed_y = 0.03
+        self.rotation_speed_z = 0.02
+        
+    def update(self):
+        self.angle_x += self.rotation_speed_x
+        self.angle_y += self.rotation_speed_y
+        self.angle_z += self.rotation_speed_z
 
 class Cube(Mesh):
     def __init__(self):
@@ -143,11 +154,11 @@ class Renderer:
         self.fov = 40
         self.viewer_distance = 4
 
-    def render_mesh(self, mesh, angle_x, angle_y, angle_z):
+    def render_mesh(self, mesh):
         rotated_vertices = []
-        rot_x = MathUtils.get_rotation_x(angle_x)
-        rot_y = MathUtils.get_rotation_y(angle_y)
-        rot_z = MathUtils.get_rotation_z(angle_z)
+        rot_x = MathUtils.get_rotation_x(mesh.angle_x)
+        rot_y = MathUtils.get_rotation_y(mesh.angle_y)
+        rot_z = MathUtils.get_rotation_z(mesh.angle_z)
         
         for v in mesh.vertices:
             rotated = MathUtils.multiply_matrix_vector(rot_x, v)
@@ -177,10 +188,6 @@ if __name__ == "__main__":
     mesh = Pyramid()
     renderer = Renderer(screen)
     
-    angle_x = 0.0
-    angle_y = 0.0
-    angle_z = 0.0
-    
     target_fps = 30
     frame_duration = 1.0 / target_fps
     
@@ -189,12 +196,9 @@ if __name__ == "__main__":
             start_time = time.time()
             
             screen.clear_buffer()
-            renderer.render_mesh(mesh, angle_x, angle_y, angle_z)
+            mesh.update()
+            renderer.render_mesh(mesh)
             screen.draw()
-            
-            angle_x += 0.05
-            angle_y += 0.03
-            angle_z += 0.02
             
             elapsed = time.time() - start_time
             sleep_time = frame_duration - elapsed
