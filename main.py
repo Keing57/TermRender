@@ -2,6 +2,16 @@ import os
 import math
 import time
 
+class Colors:
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    MAGENTA = '\033[95m'
+    CYAN = '\033[96m'
+    WHITE = '\033[97m'
+    RESET = '\033[0m'
+
 class Vector3:
     def __init__(self, x, y, z):
         self.x = x
@@ -128,7 +138,9 @@ class Screen:
         if 0 <= x < self.width and 0 <= y < self.height:
             self.framebuffer[y][x] = char
 
-    def draw_line(self, x0, y0, x1, y1, char):
+    def draw_line(self, x0, y0, x1, y1, char, color=''):
+        colored_char = f"{color}{char}{Colors.RESET}" if color else char
+        
         x0, y0, x1, y1 = int(x0), int(y0), int(x1), int(y1)
         dx = abs(x1 - x0)
         dy = abs(y1 - y0)
@@ -137,7 +149,7 @@ class Screen:
         err = dx - dy
 
         while True:
-            self.set_pixel(x0, y0, char)
+            self.set_pixel(x0, y0, colored_char)
             if x0 == x1 and y0 == y1:
                 break
             e2 = 2 * err
@@ -154,7 +166,7 @@ class Renderer:
         self.fov = 40
         self.viewer_distance = 4
 
-    def render_mesh(self, mesh):
+    def render_mesh(self, mesh, color=Colors.CYAN):
         rotated_vertices = []
         rot_x = MathUtils.get_rotation_x(mesh.angle_x)
         rot_y = MathUtils.get_rotation_y(mesh.angle_y)
@@ -175,7 +187,7 @@ class Renderer:
             v1_idx, v2_idx = edge
             x0, y0 = rotated_vertices[v1_idx]
             x1, y1 = rotated_vertices[v2_idx]
-            self.screen.draw_line(x0, y0, x1, y1, '#')
+            self.screen.draw_line(x0, y0, x1, y1, '#', color=color)
 
 def clear_screen():
     if os.name == 'nt':
@@ -184,6 +196,9 @@ def clear_screen():
         os.system('clear')
 
 if __name__ == "__main__":
+    if os.name == 'nt':
+        os.system('') # Ezzel aktiválódik az ANSI támogatás a régebbi cmd ablakokban
+        
     screen = Screen(width=80, height=40)
     mesh = Pyramid()
     renderer = Renderer(screen)
@@ -197,7 +212,7 @@ if __name__ == "__main__":
             
             screen.clear_buffer()
             mesh.update()
-            renderer.render_mesh(mesh)
+            renderer.render_mesh(mesh, color=Colors.CYAN)
             screen.draw()
             
             elapsed = time.time() - start_time
