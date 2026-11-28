@@ -20,6 +20,9 @@ class Vector3:
 
     def __sub__(self, other):
         return Vector3(self.x - other.x, self.y - other.y, self.z - other.z)
+        
+    def __add__(self, other):
+        return Vector3(self.x + other.x, self.y + other.y, self.z + other.z)
 
 class Mesh:
     def __init__(self, vertices=None, edges=None):
@@ -31,6 +34,8 @@ class Mesh:
         self.rotation_speed_x = 0.05
         self.rotation_speed_y = 0.03
         self.rotation_speed_z = 0.02
+        self.position = Vector3(0, 0, 0)
+        self.color = Colors.WHITE
         
     def update(self):
         self.angle_x += self.rotation_speed_x
@@ -164,9 +169,9 @@ class Renderer:
     def __init__(self, screen):
         self.screen = screen
         self.fov = 40
-        self.viewer_distance = 4
+        self.viewer_distance = 5
 
-    def render_mesh(self, mesh, color=Colors.CYAN):
+    def render_mesh(self, mesh):
         rotated_vertices = []
         rot_x = MathUtils.get_rotation_x(mesh.angle_x)
         rot_y = MathUtils.get_rotation_y(mesh.angle_y)
@@ -177,8 +182,10 @@ class Renderer:
             rotated = MathUtils.multiply_matrix_vector(rot_y, rotated)
             rotated = MathUtils.multiply_matrix_vector(rot_z, rotated)
             
+            translated = rotated + mesh.position
+            
             projected = MathUtils.project_3d_to_2d(
-                rotated, self.fov, self.viewer_distance, 
+                translated, self.fov, self.viewer_distance, 
                 self.screen.width, self.screen.height
             )
             rotated_vertices.append(projected)
@@ -187,7 +194,7 @@ class Renderer:
             v1_idx, v2_idx = edge
             x0, y0 = rotated_vertices[v1_idx]
             x1, y1 = rotated_vertices[v2_idx]
-            self.screen.draw_line(x0, y0, x1, y1, '#', color=color)
+            self.screen.draw_line(x0, y0, x1, y1, '#', color=mesh.color)
 
 def clear_screen():
     if os.name == 'nt':
@@ -197,10 +204,19 @@ def clear_screen():
 
 if __name__ == "__main__":
     if os.name == 'nt':
-        os.system('') # Ezzel aktiválódik az ANSI támogatás a régebbi cmd ablakokban
+        os.system('')
         
     screen = Screen(width=80, height=40)
-    mesh = Pyramid()
+    
+    cube = Cube()
+    cube.color = Colors.CYAN
+    cube.position = Vector3(-1.5, 0, 0)
+    
+    pyramid = Pyramid()
+    pyramid.color = Colors.GREEN
+    pyramid.position = Vector3(1.5, 0, 0)
+    
+    meshes = [cube, pyramid]
     renderer = Renderer(screen)
     
     target_fps = 30
@@ -211,8 +227,10 @@ if __name__ == "__main__":
             start_time = time.time()
             
             screen.clear_buffer()
-            mesh.update()
-            renderer.render_mesh(mesh, color=Colors.CYAN)
+            for m in meshes:
+                m.update()
+                renderer.render_mesh(m)
+                
             screen.draw()
             
             elapsed = time.time() - start_time
